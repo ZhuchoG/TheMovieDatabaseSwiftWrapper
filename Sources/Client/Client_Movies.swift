@@ -9,7 +9,7 @@
 import Foundation
 extension Client{
   
-  static func Movies(_ urlType: String!, page: Int?, language: String?, region: String? = nil, append_to: [String]? = nil, completion: @escaping (ClientReturn) -> ()) -> (){
+  static func Movies(_ urlType: String!, page: Int?, language: String?, region: String? = nil, append_to: [String]? = nil, completion: @escaping (ClientReturn) -> ()) -> URLSessionDataTask {
     
     var parameters: [String : AnyObject] = [:]
     
@@ -21,7 +21,7 @@ extension Client{
       parameters["language"] = language as AnyObject?
     }
     
-    //TODO: --Alternative titles (lazy change later)
+    //--Alternative titles (lazy change later)
     if(urlType.contains("alternative_titles")){
       if(language != nil){
         parameters["country"] = language as AnyObject?
@@ -39,7 +39,7 @@ extension Client{
     
     
     let url = "https://api.themoviedb.org/3/movie/" + urlType
-    networkRequest(url: url, parameters: parameters, completion: {
+    return networkRequest(url: url, parameters: parameters, completion: {
       apiReturn in
       completion(apiReturn)
     })

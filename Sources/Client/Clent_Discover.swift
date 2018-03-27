@@ -156,7 +156,7 @@ extension Client{
   }
   
   
-  static func discover(baseURL: String!, sort_by: String?, certification_country: String?, certification: String?, certification_lte: String?,  include_adult: Bool?, include_video: Bool?, primary_release_year: Int?, primary_release_date_gte: String?, primary_release_date_lte: String?, release_date_gte: String?, release_date_lte: String?,  air_date_gte: String?, air_date_lte: String?, first_air_date_gte: String?, first_air_date_lte: String?, first_air_date_year: String?, language: String?, page: Int?,  timezone: String?, vote_average_gte: Double?, vote_average_lte: Double?, vote_count_gte: Int?, vote_count_lte: Int?, with_genres: String?, with_cast: String?, with_crew: String?, with_companies: String?, with_keywords: String?, with_people: String?,  with_networks: String?, year: Int?, certification_gte: String?, completion: @escaping (ClientReturn) -> ()) -> (){
+  static func discover(baseURL: String!, sort_by: String?, certification_country: String?, certification: String?, certification_lte: String?,  include_adult: Bool?, include_video: Bool?, primary_release_year: Int?, primary_release_date_gte: String?, primary_release_date_lte: String?, release_date_gte: String?, release_date_lte: String?,  air_date_gte: String?, air_date_lte: String?, first_air_date_gte: String?, first_air_date_lte: String?, first_air_date_year: String?, language: String?, page: Int?,  timezone: String?, vote_average_gte: Double?, vote_average_lte: Double?, vote_count_gte: Int?, vote_count_lte: Int?, with_genres: String?, with_cast: String?, with_crew: String?, with_companies: String?, with_keywords: String?, with_people: String?,  with_networks: String?, year: Int?, certification_gte: String?, completion: @escaping (ClientReturn) -> ()) -> URLSessionDataTask {
     var parameters: [String : AnyObject] = [:]
     
     if (certification_country != nil){
@@ -289,7 +289,7 @@ extension Client{
     
     let url = "https://api.themoviedb.org/3/discover/" + baseURL
     
-    networkRequest(url: url, parameters: parameters){
+    return networkRequest(url: url, parameters: parameters){
       apiReturn in
       if(apiReturn.error == nil){
         completion(apiReturn)

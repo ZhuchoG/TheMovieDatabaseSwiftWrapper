@@ -29,28 +29,36 @@ public struct MDBReturn{
 }
 
 struct Client{
-  static func networkRequest(url: String, parameters: [String : AnyObject], completion: @escaping (ClientReturn) -> ()) -> (){
-    var apiReturn = ClientReturn()
+  static func networkRequest(url: String, parameters: [String : AnyObject], completion: @escaping (ClientReturn) -> ()) -> URLSessionDataTask {
+    var cReturn = ClientReturn()
 		guard let apikey = TMDBConfig.apikey else {
 			fatalError("NO API is set. Set your api using TMDBConfig.api = YOURKEY")
 		}
 		var params = parameters
 		params["api_key"] = apikey as AnyObject
-    HTTPRequest.request(url, parameters: params){
+    return HTTPRequest.request(url, parameters: params){
       (data, response, error) in
-      if let data = data, let json = try? JSON(data: data) {
-        apiReturn.json = json
-        if json["page"].exists() {
-          apiReturn.pageResults = PageResultsMDB(results: json)
+      if error == nil{
+        let json = try! JSON(data: data!)
+        cReturn.error = nil
+        cReturn.json = json
+        if(json["page"].exists()){
+          cReturn.pageResults = PageResultsMDB.init(results: json)
+        }else{
+          cReturn.pageResults = nil
         }
+      }else{
+        cReturn.error = error as NSError?
+        cReturn.json = nil
+        cReturn.pageResults = nil
       }
-      apiReturn.error = error as NSError?
-      completion(apiReturn)
+      completion(cReturn)
+
     }
   }
 	
-	static func apiRequest(url: String, parameters: [String : AnyObject], completion: @escaping (MDBReturn) -> ()) -> (){
-		HTTPRequest.request(url, parameters: parameters){
+	static func apiRequest(url: String, parameters: [String : AnyObject], completion: @escaping (MDBReturn) -> ()) -> URLSessionDataTask {
+		return HTTPRequest.request(url, parameters: parameters){
 			(data, response, error) in
 			let apiReturn = MDBReturn(err: error, data: data, reponse: response)
 			completion(apiReturn)
@@ -60,7 +68,7 @@ struct Client{
 
 class HTTPRequest{
   
-  class func request(_ url: String, parameters: [String: AnyObject],completionHandler: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ()) -> (){
+  class func request(_ url: String!, parameters: [String: AnyObject],completionHandler: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ()) -> URLSessionDataTask {
     let parameterString = parameters.stringFromHttpParameters()
     let urlString = url + "?" + parameterString
     let requestURL = URL(string: urlString)!
@@ -82,6 +90,7 @@ class HTTPRequest{
     
     
     task.resume()
+    return task
   }
 }
 

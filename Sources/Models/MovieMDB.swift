@@ -56,8 +56,8 @@ extension MovieMDB{
   }
   
   ///Get the images (posters and backdrops) for a specific movie id.
-  public class func images(movieID: Int!, language: String?  = nil, completion: @escaping (_ clientReturn: ClientReturn, _ images: ImagesMDB?) -> ()) -> (){
-    Client.Movies(String(movieID) + "/images",  page: nil, language: language){
+  public class func images(movieID: Int!, language: String?  = nil, completion: @escaping (_ clientReturn: ClientReturn, _ images: ImagesMDB?) -> ()) -> URLSessionDataTask {
+    return Client.Movies(String(movieID) + "/images",  page: nil, language: language){
       apiReturn in
       var images: ImagesMDB?
       if(apiReturn.error == nil){
